@@ -46,14 +46,14 @@ class Ball(
         val a1y = yAcc
 
 
-        // ---- X velocity ----
+        //X velocity
         val newVx = velocityX + 0.5f * (a0x + a1x) * dT
-        // ---- X displacement ----
+        //X displacement
         val dx = velocityX * dT + (1f / 6f) * dT * dT * (3f * a0x + a1x)
 
-        // ---- Y velocity ----
+        //Y velocity
         val newVy = velocityY + 0.5f * (a0y + a1y) * dT
-        // ---- Y displacement ----
+        //Y displacement
         val dy = velocityY * dT + (1f / 6f) * dT * dT * (3f * a0y + a1y)
 
         // Update
