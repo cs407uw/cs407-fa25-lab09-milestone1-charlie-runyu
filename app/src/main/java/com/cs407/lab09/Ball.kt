@@ -23,7 +23,8 @@ class Ball(
     private var isFirstUpdate = true
 
     init {
-        // TODO: Call reset()
+        // TODO: Call
+        reset()
     }
 
     /**
@@ -31,13 +32,39 @@ class Ball(
      * (See lab handout for physics equations)
      */
     fun updatePositionAndVelocity(xAcc: Float, yAcc: Float, dT: Float) {
+        if (dT <= 0f) return
         if(isFirstUpdate) {
             isFirstUpdate = false
             accX = xAcc
             accY = yAcc
             return
         }
+        // Save old acceleration
+        val a0x = accX
+        val a0y = accY
+        val a1x = xAcc
+        val a1y = yAcc
 
+
+        //X velocity
+        val newVx = velocityX + 10f * (a0x + a1x) * dT
+        //X displacement
+        val dx = velocityX * dT + (1f / 6f) * dT * dT * (3f * a0x + a1x)
+
+        //Y velocity
+        val newVy = velocityY + 10f * (a0y + a1y) * dT
+        //Y displacement
+        val dy = velocityY * dT + (1f / 6f) * dT * dT * (3f * a0y + a1y)
+
+        // Update
+        posX += dx
+        posY += dy
+        velocityX = newVx
+        velocityY = newVy
+        accX = a1x
+        accY = a1y
+
+        checkBoundaries()
     }
 
     /**
@@ -48,6 +75,29 @@ class Ball(
     fun checkBoundaries() {
         // TODO: implement the checkBoundaries function
         // (Check all 4 walls: left, right, top, bottom)
+
+        //val radius = ballSize / 2f
+
+        if (posX < 0f) {
+            posX = 0f
+            velocityX = 0f
+        }
+
+        if (posX + ballSize > backgroundWidth) {
+            posX = backgroundWidth - ballSize
+            velocityX = 0f
+        }
+
+        if (posY < 0f) {
+            posY = 0f
+            velocityY = 0f
+        }
+
+        if (posY + ballSize > backgroundHeight) {
+            posY = backgroundHeight - ballSize
+            velocityY = 0f
+        }
+
     }
 
     /**
@@ -57,5 +107,13 @@ class Ball(
     fun reset() {
         // TODO: implement the reset function
         // (Reset posX, posY, velocityX, velocityY, accX, accY, isFirstUpdate)
+
+        posX = (backgroundWidth - ballSize) / 2f
+        posY = (backgroundHeight - ballSize) / 2f
+        velocityX = 0f
+        velocityY = 0f
+        accX = 0f
+        accY = 0f
+        isFirstUpdate = true
     }
 }
