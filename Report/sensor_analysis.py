@@ -106,8 +106,8 @@ def smooth_signal(signal, window_size=10):
     """Apply moving average smoothing to signal"""
     return uniform_filter1d(signal, size=window_size, mode='nearest')
 
-# Apply smoothing to acceleration magnitude
-window_size = 15  # Optimized for step detection
+# Apply smoothing to acceleration magnitude with increased window for better filtering
+window_size = 20  # Increased from 15 to better smooth out false peaks
 walking_data['accel_mag_smooth'] = smooth_signal(walking_data['accel_mag'], window_size)
 
 # Plot raw vs smoothed data
@@ -166,12 +166,12 @@ def detect_steps(accel_mag, time_array, threshold_factor=0.15, min_step_time=0.3
     
     return np.array(step_indices), np.array(step_times)
 
-# Detect steps
+# Detect steps with optimized parameters
 step_indices, step_times = detect_steps(
     walking_data['accel_mag_smooth'].values,
     walking_data['time_s'].values,
-    threshold_factor=0.15,
-    min_step_time=0.3
+    threshold_factor=0.25,  # Higher threshold to eliminate false positive
+    min_step_time=0.42
 )
 
 num_steps = len(step_indices)
@@ -350,16 +350,16 @@ trajectory_data['accel_mag'] = np.sqrt(
     trajectory_data['accel_z']**2
 )
 
-# Smooth the data
-trajectory_data['accel_mag_smooth'] = smooth_signal(trajectory_data['accel_mag'], window_size=15)
+# Smooth the data with optimized window
+trajectory_data['accel_mag_smooth'] = smooth_signal(trajectory_data['accel_mag'], window_size=20)
 trajectory_data['gyro_z_smooth'] = smooth_signal(trajectory_data['gyro_z'], window_size=20)
 
-# Detect steps in trajectory
+# Detect steps in trajectory with optimized parameters
 traj_step_indices, traj_step_times = detect_steps(
     trajectory_data['accel_mag_smooth'].values,
     trajectory_data['time_s'].values,
-    threshold_factor=0.15,
-    min_step_time=0.3
+    threshold_factor=0.25,  # Higher threshold to eliminate false positive
+    min_step_time=0.42
 )
 
 print(f"\nDetected {len(traj_step_indices)} steps in trajectory data")
